@@ -1,21 +1,7 @@
-import sys, os
-
-sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
-
-import time
-import math
 import random
 
 import numpy as np
-import scipy as sp
-
-# from scipy.spatial import distance as scipydistance
-from numba import jit, njit, vectorize, float64, int64
 from scipy.spatial.distance import cdist, pdist
-
-import pytest
-from hypothesis import strategies as st, given, settings
-from typing import List, Dict, Set, Tuple, Any, Optional, Union
 
 
 def distance_matrix_scipy_cdist_braycurtis(ps):
@@ -61,11 +47,6 @@ def distance_matrix_scipy_cdist_jaccard(ps):
 def distance_matrix_scipy_cdist_jensenshannon(ps):
     # Calculate distances between each of the points
     return cdist(ps, ps, "jensenshannon")
-
-
-def distance_matrix_scipy_cdist_kulsinski(ps):
-    # Calculate distances between each of the points
-    return cdist(ps, ps, "kulsinski")
 
 
 def distance_matrix_scipy_cdist_mahalanobis(ps):
@@ -143,7 +124,8 @@ amount = 200
 min_value = 0
 max_value = 300
 points = np.array(
-    [np.array([random.uniform(min_value, max_value), random.uniform(min_value, max_value)]) for _ in range(amount)]
+    [np.array([random.uniform(min_value, max_value),
+               random.uniform(min_value, max_value)]) for _ in range(amount)]
 )
 
 
@@ -189,11 +171,6 @@ def test_distance_matrix_scipy_cdist_jaccard(benchmark):
 
 def test_distance_matrix_scipy_cdist_jensenshannon(benchmark):
     result = benchmark(distance_matrix_scipy_cdist_jensenshannon, points)
-    # assert check_result(result, correct_result)
-
-
-def test_distance_matrix_scipy_cdist_kulsinski(benchmark):
-    result = benchmark(distance_matrix_scipy_cdist_kulsinski, points)
     # assert check_result(result, correct_result)
 
 
@@ -268,4 +245,4 @@ def test_distance_matrix_scipy_pdist_squared(benchmark):
 
 
 # Run this file using
-# pipenv run pytest test/test_benchmark_distances_cdist.py --benchmark-compare
+# poetry run pytest test/test_benchmark_distances_cdist.py --benchmark-compare

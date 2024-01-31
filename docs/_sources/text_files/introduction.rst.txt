@@ -2,18 +2,20 @@
 Introduction
 *************
 
+This is an overview to the BurnySc2/python-sc2 library which can be found here: https://github.com/BurnySc2/python-sc2
+
 Requirements
 -------------
-- Python 3.7 or newer
+- Python 3.9 or newer
 - StarCraft 2 Client installation in the **default installation path** which should be ``C:\Program Files (x86)\StarCraft II``
 
 Installation
 -------------
-Install through pip using ``pip install burnysc2`` if Python is in your environment path, or go into your python installation folder and run through console ``python -m pip install burnysc2``.
+Install through pip using ``pip install burnysc2`` if Python is in your environment path, or go into your python installation folder and run through console ``pip install burnysc2``.
 
 Alternatively (of if the command above doesn't work) you can install a specific branch directly from github, here the develop branch::
 
-    pip install pipenv
+    pip install poetry
     pip install --upgrade --force-reinstall https://github.com/BurnySc2/python-sc2/archive/develop.zip
 
 Creating a bot
@@ -22,12 +24,16 @@ A basic bot can be made by creating a new file `my_bot.py` and filling it with t
 
     import sc2
     from sc2.bot_ai import BotAI
+    from sc2.player import Bot, Computer
+
     class MyBot(BotAI):
         async def on_step(self, iteration: int):
-            print(f"This is my bot in iteration {iteration}!"
+            print(f"This is my bot in iteration {iteration}!")
 
     sc2.run_game(
-        sc2.maps.get(map), [Bot(Race.Zerg, MyBot()), Computer(Race.Zerg, Difficulty.Hard)], realtime=False
+        sc2.maps.get("AcropolisLE"),
+        [Bot(sc2.Race.Zerg, MyBot()), Computer(sc2.Race.Zerg, sc2.Difficulty.Hard)],
+        realtime=False,
     )
 
 You can now run the file using command ``python my_bot.py`` or double clicking the file.
@@ -49,7 +55,6 @@ Information about your bot::
     self.supply_left: int # 2 for zerg, 3 for T and P at game start
 
     # Units
-    self.larva_count: int # 3 at game start (only zerg)
     self.warp_gate_count: Units # Your warp gate count (only protoss)
     self.idle_worker_count: int # Workers that are doing nothing
     self.army_count: int # Amount of army units
@@ -75,7 +80,7 @@ Information about the enemy player::
     self.enemy_structures: Units
 
     # Enemy spawn locations as a list of Point2 points
-    self.enemy_start_location: List[Point2]
+    self.enemy_start_locations: List[Point2]
 
     # Enemy units that are inside your sensor tower range
     self.blips: Set[Blip]
@@ -120,21 +125,18 @@ Training a unit
 
 Assuming you picked zerg for your bot and want to build a drone. Your larva is available in ``self.larva``. Your bot starts with 3 larva. To choose which of the larva you want to issue the command to train a drone, you need to pick one. The simplest you can do is ``my_larva = self.larva.random``. Now you have to issue a command to the larva: morph to drone.
 
-You can issue commands using the function ``self.do(action)``. You have to import ability ids before you can use them. ``from sc2.ids.ability_id import AbilityId``. Here, the action can be ``my_action = my_larva(AbilityId.LARVATRAIN_DRONE)``. In total, this results in::
+You can issue commands using the __call__ function: ``unit(ability)``. You have to import ability ids before you can use them. ``from sc2.ids.ability_id import AbilityId``. Here, the action can be ``my_larva(AbilityId.LARVATRAIN_DRONE)``. In total, this results in::
 
     from sc2.ids.ability_id import AbilityId
 
     my_larva = self.larva.random
-    my_action = my_larva(AbilityId.LARVATRAIN_DRONE)
-    self.do(action)
-    # Or the old way to do this was
-    # self.action.append(my_action)
+    my_larva(AbilityId.LARVATRAIN_DRONE)
 
 Important: The action will be issued after the ``on_step`` function is completed and the bot communicated with the SC2 Client over the API. This can result in unexpected behavior. Your larva count is still at three (``self.larva.amount == 3``), your minerals are still at 50 (``self.minerals == 50``) and your supply did not go up (``self.supply_used == 12``), but expected behavior might be that the larva amount drops to 2, self.minerals should be 0 and self.supply_used should be 13 since the pending drone uses up supply.
 
-The last two issues can be fixed by calling the ``self.do`` function differently, specifically::
+The last two issues can be fixed by calling it differently, specifically::
 
-    self.do(self.larva.random(AbilityId.LARVATRAIN_DRONE), subtract_cost=True, subtract_supply=True)
+    self.larva.random(AbilityId.LARVATRAIN_DRONE, subtract_cost=True, subtract_supply=True)
 
 The keyword arguments are optional because many actions are move or attack commands, instead of train or build commands, thus making the bot slightly faster if only specific actions are checked if they have a cost associated.
 
@@ -142,7 +144,7 @@ There are two more ways to do the same::
 
     from sc2.ids.unit_typeid import UnitTypeId
 
-    self.do(self.larva.random.train(UnitTypeId.DRONE), subtract_cost=True, subtract_supply=True)
+    self.larva.random.train(UnitTypeId.DRONE)
 
 This converts the UnitTypeId to the AbilityId that is required to train the unit.
 
@@ -156,7 +158,7 @@ So a more performant way to train as many drones as possible is::
 
     for loop_larva in self.larva:
         if self.can_afford(UnitTypeId.DRONE):
-            self.do(loop_larva.train(UnitTypeId.DRONE), subtract_cost=True, subtract_supply=True)
+            loop_larva.train(UnitTypeId.DRONE)
             # Add break statement here if you only want to train one
         else:
             # Can't afford drones anymore
@@ -170,7 +172,7 @@ Warning: You need to prevent issuing multiple commands to the same larva in the 
         if loop_larva.tag in self.unit_tags_received_action:
             continue
         if self.can_afford(UnitTypeId.DRONE):
-            self.do(loop_larva.train(UnitTypeId.DRONE), subtract_cost=True, subtract_supply=True)
+            loop_larva.train(UnitTypeId.DRONE)
             # Add break statement here if you only want to train one
         else:
             # Can't afford drones anymore
@@ -207,12 +209,12 @@ A function that can test which position is valid for a spawning pool is ``self.f
 
 One thing that was not mentioned yet is that you don't want to build more than 1 spawning pool. To prevent this, you can check that the number of pending and completed structures is zero::
 
-    if self.already_pending(UnitTypeId.SPAWNINGPOOL) + self.units.filter(lambda structure: structure.type_id == UnitTypeId.SPAWNINGPOOL and structure.is_ready).amount == 0:
+    if self.already_pending(UnitTypeId.SPAWNINGPOOL) + self.structures.filter(lambda structure: structure.type_id == UnitTypeId.SPAWNINGPOOL and structure.is_ready).amount == 0:
         # Build spawning pool
 
 So in total: To build a spawning pool in direction of the map center, it is recommended to use::
 
-    if self.can_afford(UnitTypeId.SPAWNINGPOOL) and self.already_pending(UnitTypeId.SPAWNINGPOOL) + self.units.filter(lambda structure: structure.type_id == UnitTypeId.SPAWNINGPOOL and structure.is_ready).amount == 0:
+    if self.can_afford(UnitTypeId.SPAWNINGPOOL) and self.already_pending(UnitTypeId.SPAWNINGPOOL) + self.structures.filter(lambda structure: structure.type_id == UnitTypeId.SPAWNINGPOOL and structure.is_ready).amount == 0:
         worker_candidates = self.workers.filter(lambda worker: (worker.is_collecting or worker.is_idle) and worker.tag not in self.unit_tags_received_action)
         # Worker_candidates can be empty
         if worker_candidates:
@@ -222,24 +224,12 @@ So in total: To build a spawning pool in direction of the map center, it is reco
             # Placement_position can be None
             if placement_position:
                 build_worker = worker_candidates.closest_to(placement_position)
-                self.do(build_worker.build(UnitTypeId.SPAWNINGPOOL, placement_position, subtract_cost=True)
+                build_worker.build(UnitTypeId.SPAWNINGPOOL, placement_position)
 
 The same can be achieved with the convenience function ``self.build`` which automatically picks a worker and internally uses ``self.find_placement``::
 
-    if self.can_afford(UnitTypeId.SPAWNINGPOOL) and self.already_pending(UnitTypeId.SPAWNINGPOOL) + self.units.filter(lambda structure: structure.type_id == UnitTypeId.SPAWNINGPOOL and structure.is_ready).amount == 0:
+    if self.can_afford(UnitTypeId.SPAWNINGPOOL) and self.already_pending(UnitTypeId.SPAWNINGPOOL) + self.structures.filter(lambda structure: structure.type_id == UnitTypeId.SPAWNINGPOOL and structure.is_ready).amount == 0:
         map_center = self.game_info.map_center
         position_towards_map_center = self.start_location.towards(map_center, distance=5)
         await self.build(UnitTypeId.SPAWNINGPOOL, near=position_towards_map_center, placement_step=1)
-
-
-
-
-
-
-
-
-
-
-
-
 

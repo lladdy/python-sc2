@@ -1,22 +1,4 @@
-import json, os, subprocess
-import lzma, pickle
-from typing import Dict, Set, List, Union, Optional
-
-from sc2.ids.unit_typeid import UnitTypeId
-from sc2.ids.ability_id import AbilityId
-from sc2.ids.buff_id import BuffId
-from sc2.ids.upgrade_id import UpgradeId
-from sc2.ids.effect_id import EffectId
-from sc2.game_data import GameData
-
-from collections import OrderedDict
-
-# from ordered_set import OrderedSet
-
 """
-Script requirements:
-pip install black
-
 This script does the following:
 
 - Loop over all abilities, checking what unit they create and if it requires a placement position
@@ -24,28 +6,45 @@ This script does the following:
 - Loop over all all upgrades and get their creation ability, which unit can research it and what building requirements there are
 - Loop over all units and get their unit and tech aliases
 
-Dentosals data.json
-https://github.com/Dentosal/sc2-techtree/blob/master/data/data.json
-
-json viewers to inspect the data.json manually:
-http://jsonviewer.stack.hu/
-https://jsonformatter.org/json-viewer
+data.json origin:
+https://github.com/BurnySc2/sc2-techtree/tree/develop/data
 """
+import json
+import lzma
+import os
+import pickle
+from collections import OrderedDict
+from pathlib import Path
+from typing import Dict, List, Optional, Set, Union
+
+from loguru import logger
+
+from sc2.game_data import GameData
+from sc2.ids.ability_id import AbilityId
+from sc2.ids.unit_typeid import UnitTypeId
+from sc2.ids.upgrade_id import UpgradeId
+
+
+def get_map_file_path() -> Path:
+    return Path(__file__).parent / "test" / "pickle_data" / "DeathAuraLE.xz"
+
 
 # Custom repr function so that the output is always the same and only changes when there were changes in the data.json tech tree file
 # The output just needs to be ordered (sorted by enum name), but it does not matter anymore if the bot then imports an unordered dict and set
 class OrderedDict2(OrderedDict):
+
     def __repr__(self):
         if not self:
             return "{}"
         return (
-            "{"
-            + ", ".join(f"{repr(key)}: {repr(value)}" for key, value in sorted(self.items(), key=lambda u: u[0].name))
-            + "}"
+            "{" +
+            ", ".join(f"{repr(key)}: {repr(value)}"
+                      for key, value in sorted(self.items(), key=lambda u: u[0].name)) + "}"
         )
 
 
 class OrderedSet2(set):
+
     def __repr__(self):
         if not self:
             return "set()"
@@ -53,39 +52,33 @@ class OrderedSet2(set):
 
 
 def dump_dict_to_file(
-    my_dict: OrderedDict2, file_path: str, dict_name: str, file_header: str = "", dict_type_annotation: str = ""
+    my_dict: OrderedDict2, file_path: Path, dict_name: str, file_header: str = "", dict_type_annotation: str = ""
 ):
-    with open(file_path, "w") as f:
+    with file_path.open("w") as f:
         f.write(file_header)
         f.write("\n")
         f.write(f"{dict_name}{dict_type_annotation} = ")
         assert isinstance(my_dict, OrderedDict2)
-        print(my_dict)
+        logger.info(my_dict)
         f.write(repr(my_dict))
 
-    # Apply formatting
-    subprocess.run(["black", file_path])
 
+def generate_init_file(dict_file_paths: List[Path], file_path: Path, file_header: str):
+    base_file_names = sorted(path.stem for path in dict_file_paths)
 
-def generate_init_file(dict_file_paths: List[str], file_path: str, file_header: str):
-    base_file_names = sorted(os.path.splitext(os.path.basename(path))[0] for path in dict_file_paths)
-
-    with open(file_path, "w") as f:
+    with file_path.open("w") as f:
         f.write(file_header)
         f.write("\n")
 
         all_line = f"__all__ = {base_file_names}"
-        print(all_line)
+        logger.info(all_line)
         f.write(all_line)
-
-    # Apply formatting
-    subprocess.run(["black", file_path])
 
 
 def get_unit_train_build_abilities(data):
     ability_data = data["Ability"]
     unit_data = data["Unit"]
-    upgrade_data = data["Upgrade"]
+    _upgrade_data = data["Upgrade"]
 
     # From which abilities can a unit be trained
     train_abilities: Dict[UnitTypeId, Set[AbilityId]] = OrderedDict2()
@@ -122,16 +115,17 @@ def get_unit_train_build_abilities(data):
         # Collect larva morph abilities, and one way morphs (exclude burrow, hellbat morph, siege tank siege)
         # Also doesnt include building addons
         if not train_unit_type_id_value and (
-            "LARVATRAIN_" in ability_id.name
-            or ability_id
-            in {
+            "LARVATRAIN_" in ability_id.name or ability_id in {
                 AbilityId.MORPHTOBROODLORD_BROODLORD,
                 AbilityId.MORPHZERGLINGTOBANELING_BANELING,
                 AbilityId.MORPHTORAVAGER_RAVAGER,
+                AbilityId.MORPHTOBANELING_BANELING,
                 AbilityId.MORPH_LURKER,
                 AbilityId.UPGRADETOLAIR_LAIR,
                 AbilityId.UPGRADETOHIVE_HIVE,
                 AbilityId.UPGRADETOGREATERSPIRE_GREATERSPIRE,
+                AbilityId.UPGRADETOORBITAL_ORBITALCOMMAND,
+                AbilityId.UPGRADETOPLANETARYFORTRESS_PLANETARYFORTRESS,
                 AbilityId.MORPH_OVERLORDTRANSPORT,
                 AbilityId.MORPH_OVERSEER,
             }
@@ -163,14 +157,13 @@ def get_unit_train_build_abilities(data):
                 ability_requires_placement.add(ability_id)
 
             ability_to_unittypeid_dict[ability_id] = created_unit_type_id
-
     """
     unit_train_abilities = {
         UnitTypeId.GATEWAY: {
             UnitTypeId.ADEPT: {
                 "ability": AbilityId.TRAIN_ADEPT,
                 "requires_techlab": False,
-                "requires_tech_building": UnitTypeId.CYBERNETICSCORE, # Or None
+                "required_building": UnitTypeId.CYBERNETICSCORE, # Or None
                 "requires_placement_position": False, # True for warp gate
                 "requires_power": True, # If a pylon nearby is required
             },
@@ -195,10 +188,9 @@ def get_unit_train_build_abilities(data):
                     continue
 
                 requires_techlab: bool = False
-                requires_tech_building: Optional[UnitTypeId] = None
+                required_building: Optional[UnitTypeId] = None
                 requires_placement_position: bool = False
                 requires_power: bool = False
-
                 """
                 requirements = [
                     {
@@ -221,21 +213,12 @@ def get_unit_train_build_abilities(data):
                         (req["building"] for req in requirements if req.get("building", 0)), 0
                     )
                     if requires_tech_builing_id_value:
-                        requires_tech_building = UnitTypeId(requires_tech_builing_id_value)
+                        required_building = UnitTypeId(requires_tech_builing_id_value)
 
                 if ability_id in ability_requires_placement:
                     requires_placement_position = True
 
                 requires_power = entry.get("needs_power", False)
-
-                # Debugging output:
-
-                # if ability_id in {AbilityId.BARRACKSTRAIN_GHOST}:
-                #     print(json.dumps(entry, indent=4))
-
-                # TODO: Hotfix for ghost
-                if ability_id == AbilityId.BARRACKSTRAIN_GHOST:
-                    requires_techlab = True
 
                 resulting_unit = ability_to_unittypeid_dict[ability_id]
 
@@ -243,8 +226,8 @@ def get_unit_train_build_abilities(data):
                 # Only add boolean values and tech requirement if they actually exist, to make the resulting dict file smaller
                 if requires_techlab:
                     ability_dict["requires_techlab"] = requires_techlab
-                if requires_tech_building:
-                    ability_dict["requires_tech_building"] = requires_tech_building
+                if required_building:
+                    ability_dict["required_building"] = required_building
                 if requires_placement_position:
                     ability_dict["requires_placement_position"] = requires_placement_position
                 if requires_power:
@@ -260,10 +243,9 @@ def get_unit_train_build_abilities(data):
 def get_upgrade_abilities(data):
     ability_data = data["Ability"]
     unit_data = data["Unit"]
-    upgrade_data = data["Upgrade"]
+    _upgrade_data = data["Upgrade"]
 
     ability_to_upgrade_dict: Dict[AbilityId, UpgradeId] = OrderedDict2()
-
     """
     We want to be able to research an upgrade by doing
     await self.can_research(UpgradeId, return_idle_structures=True) -> returns list of idle structures that can research it
@@ -283,19 +265,18 @@ def get_upgrade_abilities(data):
             upgrade_id: UpgradeId = UpgradeId(upgrade_id_value)
 
             ability_to_upgrade_dict[ability_id] = upgrade_id
-
     """
     unit_research_abilities = {
         UnitTypeId.ENGINEERINGBAY: {
             UpgradeId.TERRANINFANTRYWEAPONSLEVEL1:
             {
                 "ability": AbilityId.ENGINEERINGBAYRESEARCH_TERRANINFANTRYWEAPONSLEVEL1,
-                "requires_tech_building": None,
+                "required_building": None,
                 "requires_power": False, # If a pylon nearby is required
             },
             UpgradeId.TERRANINFANTRYWEAPONSLEVEL2: {
                 "ability": AbilityId.ENGINEERINGBAYRESEARCH_TERRANINFANTRYWEAPONSLEVEL2,
-                "requires_tech_building": UnitTypeId.ARMORY,
+                "required_building": UnitTypeId.ARMORY,
                 "requires_power": False, # If a pylon nearby is required
             },
         }
@@ -318,25 +299,21 @@ def get_upgrade_abilities(data):
                 if ability_id not in ability_to_upgrade_dict:
                     continue
 
-                greater_spire_as_requirement: Set[AbilityId] = {
-                    AbilityId.RESEARCH_ZERGFLYERATTACKLEVEL2,
-                    AbilityId.RESEARCH_ZERGFLYERATTACKLEVEL3,
-                    AbilityId.RESEARCH_ZERGFLYERARMORLEVEL2,
-                    AbilityId.RESEARCH_ZERGFLYERARMORLEVEL3,
-                }
-
                 required_building = None
+                required_upgrade = None
                 requirements = ability_info.get("requirements", [])
-                # TODO: fix for greater spire, wrong in dentosals tech tree (lair and hive instead of greater spire)
-                if ability_id in greater_spire_as_requirement:
-                    required_building = UnitTypeId.GREATERSPIRE
-                elif requirements:
+                if requirements:
                     req_building_id_value = next(
                         (req["building"] for req in requirements if req.get("building", 0)), None
                     )
                     if req_building_id_value:
                         req_building_id = UnitTypeId(req_building_id_value)
                         required_building = req_building_id
+
+                    req_upgrade_id_value = next((req["upgrade"] for req in requirements if req.get("upgrade", 0)), None)
+                    if req_upgrade_id_value:
+                        req_upgrade_id = UpgradeId(req_upgrade_id_value)
+                        required_upgrade = req_upgrade_id
 
                 requires_power = entry.get("needs_power", False)
 
@@ -345,31 +322,14 @@ def get_upgrade_abilities(data):
                 research_info = {"ability": ability_id}
                 if required_building:
                     research_info["required_building"] = required_building
+                if required_upgrade:
+                    research_info["required_upgrade"] = required_upgrade
                 if requires_power:
                     research_info["requires_power"] = requires_power
                 current_unit_research_abilities[resulting_upgrade] = research_info
 
-        # TODO: Fix liberator range upgrade, missing in dentosals techtree
-        if unit_type == UnitTypeId.STARPORTTECHLAB:
-            current_unit_research_abilities[UpgradeId.LIBERATORMORPH] = {
-                "upgrade": UpgradeId.LIBERATORMORPH,
-                "ability": AbilityId.STARPORTTECHLABRESEARCH_RESEARCHLIBERATORAGMODE,
-                "requires_tech_building": UnitTypeId.FUSIONCORE,
-            }
-
-        # TODO: Fix lurker den adaptive talons, missing in dentosals techtree
-        if unit_type == UnitTypeId.LURKERDENMP:
-            current_unit_research_abilities[UpgradeId.DIGGINGCLAWS] = {
-                "upgrade": UpgradeId.DIGGINGCLAWS,
-                "ability": AbilityId.RESEARCH_ADAPTIVETALONS,
-                "requires_tech_building": UnitTypeId.HIVE,
-            }
-
         if current_unit_research_abilities:
             unit_research_abilities[unit_type] = current_unit_research_abilities
-
-    # TODO: Hotfix for greater spire - currently only level 1 research abilities are listed in greater spire (dentosals tech tree), but 1 to 3 are listed in spire
-    unit_research_abilities[UnitTypeId.GREATERSPIRE] = unit_research_abilities[UnitTypeId.SPIRE]
 
     return unit_research_abilities
 
@@ -391,15 +351,17 @@ def get_upgrade_researched_from(unit_research_abilities: dict):
 
     for researcher_unit, research_abilities in unit_research_abilities.items():
         for upgrade, research_info in research_abilities.items():
-            upgrade_researched_from[upgrade] = researcher_unit
+            # This if statement is to prevent LAIR and HIVE overriding "UpgradeId.OVERLORDSPEED" as well as greater spire overriding upgrade abilities
+            if upgrade not in upgrade_researched_from:
+                upgrade_researched_from[upgrade] = researcher_unit
 
     return upgrade_researched_from
 
 
 def get_unit_abilities(data: dict):
-    ability_data = data["Ability"]
+    _ability_data = data["Ability"]
     unit_data = data["Unit"]
-    upgrade_data = data["Upgrade"]
+    _upgrade_data = data["Upgrade"]
 
     all_unit_abilities: Dict[UnitTypeId, Set[AbilityId]] = OrderedDict2()
     entry: dict
@@ -413,23 +375,22 @@ def get_unit_abilities(data: dict):
                 ability_id: AbilityId = AbilityId(ability_id_value)
                 current_collected_unit_abilities.add(ability_id)
 
-        # print(unit_type, current_unit_abilities)
+        # logger.info(unit_type, current_unit_abilities)
         if current_collected_unit_abilities:
             all_unit_abilities[unit_type] = current_collected_unit_abilities
     return all_unit_abilities
 
 
 def generate_unit_alias_dict(data: dict):
-    ability_data = data["Ability"]
+    _ability_data = data["Ability"]
     unit_data = data["Unit"]
-    upgrade_data = data["Upgrade"]
+    _upgrade_data = data["Upgrade"]
 
-    # Load pickled game data files
-    path = os.path.dirname(__file__)
-    pickled_files_folder_path = os.path.join(path, "test", "pickle_data")
-    pickled_files = os.listdir(pickled_files_folder_path)
-    random_pickled_file = next(f for f in pickled_files if f.endswith(".xz"))
-    with lzma.open(os.path.join(pickled_files_folder_path, random_pickled_file), "rb") as f:
+    # Load pickled game data files from one of the test files
+    pickled_file_path = get_map_file_path()
+    assert pickled_file_path.is_file(), f"Could not find pickled data file {pickled_file_path}"
+    logger.info(f"Loading pickled game data file {pickled_file_path}")
+    with lzma.open(pickled_file_path.absolute(), "rb") as f:
         raw_game_data, raw_game_info, raw_observation = pickle.load(f)
         game_data = GameData(raw_game_data.data)
 
@@ -443,6 +404,9 @@ def generate_unit_alias_dict(data: dict):
 
         current_unit_tech_aliases: Set[UnitTypeId] = OrderedSet2()
 
+        assert (
+            unit_type_value in game_data.units
+        ), f"Unit {unit_type} not listed in game_data.units - perhaps pickled file {pickled_file_path} is outdated?"
         unit_alias: int = game_data.units[unit_type_value]._proto.unit_alias
         if unit_alias:
             # Might be 0 if it has no alias
@@ -464,17 +428,8 @@ def generate_unit_alias_dict(data: dict):
 
 def generate_redirect_abilities_dict(data: dict):
     ability_data = data["Ability"]
-    unit_data = data["Unit"]
-    upgrade_data = data["Upgrade"]
-
-    # Load pickled game data files
-    path = os.path.dirname(__file__)
-    pickled_files_folder_path = os.path.join(path, "test", "pickle_data")
-    pickled_files = os.listdir(pickled_files_folder_path)
-    random_pickled_file = next(f for f in pickled_files if f.endswith(".xz"))
-    with lzma.open(os.path.join(pickled_files_folder_path, random_pickled_file), "rb") as f:
-        raw_game_data, raw_game_info, raw_observation = pickle.load(f)
-        game_data = GameData(raw_game_data.data)
+    _unit_data = data["Unit"]
+    _upgrade_data = data["Upgrade"]
 
     all_redirect_abilities: Dict[AbilityId, AbilityId] = OrderedDict2()
 
@@ -483,67 +438,68 @@ def generate_redirect_abilities_dict(data: dict):
         ability_id_value: int = entry["id"]
         try:
             ability_id: AbilityId = AbilityId(ability_id_value)
-        except Exception as e:
-            print(f"Error with ability id value {ability_id_value}")
+        except Exception:
+            logger.info(f"Error with ability id value {ability_id_value}")
             continue
 
-        generic_redirect_ability_value: int = game_data.abilities[ability_id_value]._proto.remaps_to_ability_id
-        if generic_redirect_ability_value:
-            # Might be 0 if it has no redirect ability
-            all_redirect_abilities[ability_id] = AbilityId(generic_redirect_ability_value)
+        generic_redirect_ability_value = entry.get("remaps_to_ability_id", 0)
+        if generic_redirect_ability_value == 0:
+            # No generic ability available
+            continue
+        all_redirect_abilities[ability_id] = AbilityId(generic_redirect_ability_value)
 
     return all_redirect_abilities
 
 
 def main():
-    path = os.path.dirname(__file__)
+    path = Path(__file__).parent
 
-    data_path = os.path.join(path, "data", "data.json")
-    with open(data_path) as f:
+    data_path = path / "data" / "data.json"
+    with data_path.open() as f:
         data = json.load(f)
 
-    dicts_path = os.path.join(path, "sc2", "dicts")
+    dicts_path = path / "sc2" / "dicts"
     os.makedirs(dicts_path, exist_ok=True)
 
     # All unit train and build abilities
     unit_train_abilities = get_unit_train_build_abilities(data=data)
-    unit_creation_dict_path = os.path.join(dicts_path, "unit_train_build_abilities.py")
+    unit_creation_dict_path = dicts_path / "unit_train_build_abilities.py"
 
     # All upgrades and which building can research which upgrade
     unit_research_abilities = get_upgrade_abilities(data=data)
-    unit_research_abilities_dict_path = os.path.join(dicts_path, "unit_research_abilities.py")
+    unit_research_abilities_dict_path = dicts_path / "unit_research_abilities.py"
 
     # All train abilities (where a unit can be trained from)
     unit_trained_from = get_unit_created_from(unit_train_abilities=unit_train_abilities)
-    unit_trained_from_dict_path = os.path.join(dicts_path, "unit_trained_from.py")
+    unit_trained_from_dict_path = dicts_path / "unit_trained_from.py"
 
     # All research abilities (where an upgrade can be researched from)
     upgrade_researched_from = get_upgrade_researched_from(unit_research_abilities=unit_research_abilities)
-    upgrade_researched_from_dict_path = os.path.join(dicts_path, "upgrade_researched_from.py")
+    upgrade_researched_from_dict_path = dicts_path / "upgrade_researched_from.py"
 
     # All unit abilities without requirements
     unit_abilities = get_unit_abilities(data=data)
-    unit_abilities_dict_path = os.path.join(dicts_path, "unit_abilities.py")
+    unit_abilities_dict_path = dicts_path / "unit_abilities.py"
 
     # All unit_alias and tech_alias of a unit type
     unit_unit_alias, unit_tech_alias = generate_unit_alias_dict(data=data)
-    unit_unit_alias_dict_path = os.path.join(dicts_path, "unit_unit_alias.py")
-    unit_tech_alias_dict_path = os.path.join(dicts_path, "unit_tech_alias.py")
+    unit_unit_alias_dict_path = dicts_path / "unit_unit_alias.py"
+    unit_tech_alias_dict_path = dicts_path / "unit_tech_alias.py"
 
     # All redirect (generic) abilities of abilities
     all_redirect_abilities = generate_redirect_abilities_dict(data=data)
-    all_redirect_abilities_path = os.path.join(dicts_path, "generic_redirect_abilities.py")
+    all_redirect_abilities_path = dicts_path / "generic_redirect_abilities.py"
 
-    file_name = os.path.basename(__file__)
+    file_name = Path(__file__).name
     file_header = f"""
 # THIS FILE WAS AUTOMATICALLY GENERATED BY "{file_name}" DO NOT CHANGE MANUALLY!
 # ANY CHANGE WILL BE OVERWRITTEN
 
-from ..ids.unit_typeid import UnitTypeId
-from ..ids.ability_id import AbilityId
-from ..ids.upgrade_id import UpgradeId
-# from ..ids.buff_id import BuffId
-# from ..ids.effect_id import EffectId
+from sc2.ids.unit_typeid import UnitTypeId
+from sc2.ids.ability_id import AbilityId
+from sc2.ids.upgrade_id import UpgradeId
+# from sc2.ids.buff_id import BuffId
+# from sc2.ids.effect_id import EffectId
 
 from typing import Dict, Set, Union
     """
@@ -558,7 +514,7 @@ from typing import Dict, Set, Union
         unit_tech_alias_dict_path,
         all_redirect_abilities_path,
     ]
-    init_file_path = os.path.join(dicts_path, "__init__.py")
+    init_file_path = dicts_path / "__init__.py"
     init_header = f"""# DO NOT EDIT!
 # This file was automatically generated by "{file_name}"
     
@@ -577,7 +533,8 @@ from typing import Dict, Set, Union
         unit_research_abilities_dict_path,
         dict_name="RESEARCH_INFO",
         file_header=file_header,
-        dict_type_annotation=": Dict[UnitTypeId, Dict[UpgradeId, Dict[str, Union[AbilityId, bool, UnitTypeId]]]]",
+        dict_type_annotation=
+        ": Dict[UnitTypeId, Dict[UpgradeId, Dict[str, Union[AbilityId, bool, UnitTypeId, UpgradeId]]]]",
     )
     dump_dict_to_file(
         unit_trained_from,
@@ -621,8 +578,6 @@ from typing import Dict, Set, Union
         file_header=file_header,
         dict_type_annotation=": Dict[AbilityId, AbilityId]",
     )
-
-    # print(unit_train_abilities)
 
 
 if __name__ == "__main__":

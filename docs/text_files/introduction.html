@@ -1,82 +1,144 @@
-
 <!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta charset="utf-8" />
-    <title>Introduction &#8212; python-sc2  documentation</title>
-    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="../_static/language_data.js"></script>
-    
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Introduction &mdash; python-sc2  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="bot_ai.py" href="../bot_ai/index.html" />
+    <link rel="next" title="Using docker to run SC2 bots" href="docker.html" />
     <link rel="prev" title="Welcome to python-sc2’s documentation!" href="../index.html" /> 
-  </head><body>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="../bot_ai/index.html" title="bot_ai.py"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="../index.html" title="Welcome to python-sc2’s documentation!"
-             accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">python-sc2  documentation</a> &#187;</li> 
-      </ul>
-    </div>  
+</head>
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
-            
-  <div class="section" id="introduction">
-<h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="requirements">
-<h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            python-sc2
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#creating-a-bot">Creating a bot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#available-information-in-the-game">Available information in the game</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#possible-bot-actions">Possible bot actions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#training-a-unit">Training a unit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#building-a-structure">Building a structure</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="docker.html">Using docker to run SC2 bots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bot_ai/index.html">bot_ai.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../unit/index.html">unit.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units/index.html">units.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../game_data/index.html">game_data.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../game_info/index.html">game_info.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../game_state/index.html">game_state.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../client/index.html">client.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../position/index.html">position.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pixel_map/index.html">pixel_map.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../protocol/index.html">protocol.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../score/index.html">score.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../unit_command/index.html">unit_command.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ids/index.html">ids</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">python-sc2</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Introduction</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/text_files/introduction.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="introduction">
+<h1>Introduction<a class="headerlink" href="#introduction" title="Link to this heading"></a></h1>
+<p>This is an overview to the BurnySc2/python-sc2 library which can be found here: <a class="reference external" href="https://github.com/BurnySc2/python-sc2">https://github.com/BurnySc2/python-sc2</a></p>
+<section id="requirements">
+<h2>Requirements<a class="headerlink" href="#requirements" title="Link to this heading"></a></h2>
 <ul class="simple">
-<li><p>Python 3.7 or newer</p></li>
+<li><p>Python 3.9 or newer</p></li>
 <li><p>StarCraft 2 Client installation in the <strong>default installation path</strong> which should be <code class="docutils literal notranslate"><span class="pre">C:\Program</span> <span class="pre">Files</span> <span class="pre">(x86)\StarCraft</span> <span class="pre">II</span></code></p></li>
 </ul>
-</div>
-<div class="section" id="installation">
-<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
-<p>Install through pip using <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">burnysc2</span></code> if Python is in your environment path, or go into your python installation folder and run through console <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">burnysc2</span></code>.</p>
+</section>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h2>
+<p>Install through pip using <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">burnysc2</span></code> if Python is in your environment path, or go into your python installation folder and run through console <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">burnysc2</span></code>.</p>
 <p>Alternatively (of if the command above doesn’t work) you can install a specific branch directly from github, here the develop branch:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">pipenv</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">poetry</span>
 <span class="n">pip</span> <span class="n">install</span> <span class="o">--</span><span class="n">upgrade</span> <span class="o">--</span><span class="n">force</span><span class="o">-</span><span class="n">reinstall</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">BurnySc2</span><span class="o">/</span><span class="n">python</span><span class="o">-</span><span class="n">sc2</span><span class="o">/</span><span class="n">archive</span><span class="o">/</span><span class="n">develop</span><span class="o">.</span><span class="n">zip</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="creating-a-bot">
-<h2>Creating a bot<a class="headerlink" href="#creating-a-bot" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="creating-a-bot">
+<h2>Creating a bot<a class="headerlink" href="#creating-a-bot" title="Link to this heading"></a></h2>
 <p>A basic bot can be made by creating a new file <cite>my_bot.py</cite> and filling it with the following contents:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sc2</span>
-<span class="kn">from</span> <span class="nn">sc2.bot_ai</span> <span class="k">import</span> <span class="n">BotAI</span>
+<span class="kn">from</span> <span class="nn">sc2.bot_ai</span> <span class="kn">import</span> <span class="n">BotAI</span>
+<span class="kn">from</span> <span class="nn">sc2.player</span> <span class="kn">import</span> <span class="n">Bot</span><span class="p">,</span> <span class="n">Computer</span>
+
 <span class="k">class</span> <span class="nc">MyBot</span><span class="p">(</span><span class="n">BotAI</span><span class="p">):</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">on_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iteration</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;This is my bot in iteration </span><span class="si">{iteration}</span><span class="s2">!&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;This is my bot in iteration </span><span class="si">{</span><span class="n">iteration</span><span class="si">}</span><span class="s2">!&quot;</span><span class="p">)</span>
 
 <span class="n">sc2</span><span class="o">.</span><span class="n">run_game</span><span class="p">(</span>
-    <span class="n">sc2</span><span class="o">.</span><span class="n">maps</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">map</span><span class="p">),</span> <span class="p">[</span><span class="n">Bot</span><span class="p">(</span><span class="n">Race</span><span class="o">.</span><span class="n">Zerg</span><span class="p">,</span> <span class="n">MyBot</span><span class="p">()),</span> <span class="n">Computer</span><span class="p">(</span><span class="n">Race</span><span class="o">.</span><span class="n">Zerg</span><span class="p">,</span> <span class="n">Difficulty</span><span class="o">.</span><span class="n">Hard</span><span class="p">)],</span> <span class="n">realtime</span><span class="o">=</span><span class="kc">False</span>
+    <span class="n">sc2</span><span class="o">.</span><span class="n">maps</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;AcropolisLE&quot;</span><span class="p">),</span>
+    <span class="p">[</span><span class="n">Bot</span><span class="p">(</span><span class="n">sc2</span><span class="o">.</span><span class="n">Race</span><span class="o">.</span><span class="n">Zerg</span><span class="p">,</span> <span class="n">MyBot</span><span class="p">()),</span> <span class="n">Computer</span><span class="p">(</span><span class="n">sc2</span><span class="o">.</span><span class="n">Race</span><span class="o">.</span><span class="n">Zerg</span><span class="p">,</span> <span class="n">sc2</span><span class="o">.</span><span class="n">Difficulty</span><span class="o">.</span><span class="n">Hard</span><span class="p">)],</span>
+    <span class="n">realtime</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
 </div>
 <p>You can now run the file using command <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">my_bot.py</span></code> or double clicking the file.</p>
 <p>A SC2 window should open and your bot should print the text several times per second to the console. Your bot will not do anything else because no orders are issued to your units.</p>
-</div>
-<div class="section" id="available-information-in-the-game">
-<h2>Available information in the game<a class="headerlink" href="#available-information-in-the-game" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="available-information-in-the-game">
+<h2>Available information in the game<a class="headerlink" href="#available-information-in-the-game" title="Link to this heading"></a></h2>
 <p>Information about your bot:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Resources and supply</span>
 <span class="bp">self</span><span class="o">.</span><span class="n">minerals</span><span class="p">:</span> <span class="nb">int</span>
@@ -88,7 +150,6 @@
 <span class="bp">self</span><span class="o">.</span><span class="n">supply_left</span><span class="p">:</span> <span class="nb">int</span> <span class="c1"># 2 for zerg, 3 for T and P at game start</span>
 
 <span class="c1"># Units</span>
-<span class="bp">self</span><span class="o">.</span><span class="n">larva_count</span><span class="p">:</span> <span class="nb">int</span> <span class="c1"># 3 at game start (only zerg)</span>
 <span class="bp">self</span><span class="o">.</span><span class="n">warp_gate_count</span><span class="p">:</span> <span class="n">Units</span> <span class="c1"># Your warp gate count (only protoss)</span>
 <span class="bp">self</span><span class="o">.</span><span class="n">idle_worker_count</span><span class="p">:</span> <span class="nb">int</span> <span class="c1"># Workers that are doing nothing</span>
 <span class="bp">self</span><span class="o">.</span><span class="n">army_count</span><span class="p">:</span> <span class="nb">int</span> <span class="c1"># Amount of army units</span>
@@ -114,7 +175,7 @@
 <span class="bp">self</span><span class="o">.</span><span class="n">enemy_structures</span><span class="p">:</span> <span class="n">Units</span>
 
 <span class="c1"># Enemy spawn locations as a list of Point2 points</span>
-<span class="bp">self</span><span class="o">.</span><span class="n">enemy_start_location</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Point2</span><span class="p">]</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">enemy_start_locations</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Point2</span><span class="p">]</span>
 
 <span class="c1"># Enemy units that are inside your sensor tower range</span>
 <span class="bp">self</span><span class="o">.</span><span class="n">blips</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="n">Blip</span><span class="p">]</span>
@@ -150,33 +211,30 @@
 <span class="bp">self</span><span class="o">.</span><span class="n">time_formatted</span><span class="p">:</span> <span class="nb">str</span> <span class="c1"># The current game time properly formatted in &#39;min:sec&#39;</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="possible-bot-actions">
-<h2>Possible bot actions<a class="headerlink" href="#possible-bot-actions" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="possible-bot-actions">
+<h2>Possible bot actions<a class="headerlink" href="#possible-bot-actions" title="Link to this heading"></a></h2>
 <p>The game has started and now you want to build stuff with your mined resources. I assume you played at least one game of SC2 and know the basics, for example where you build drones (from larva) and SCVs and probes (from command center and nexus respectively).</p>
-<div class="section" id="training-a-unit">
-<h3>Training a unit<a class="headerlink" href="#training-a-unit" title="Permalink to this headline">¶</a></h3>
+<section id="training-a-unit">
+<h3>Training a unit<a class="headerlink" href="#training-a-unit" title="Link to this heading"></a></h3>
 <p>Assuming you picked zerg for your bot and want to build a drone. Your larva is available in <code class="docutils literal notranslate"><span class="pre">self.larva</span></code>. Your bot starts with 3 larva. To choose which of the larva you want to issue the command to train a drone, you need to pick one. The simplest you can do is <code class="docutils literal notranslate"><span class="pre">my_larva</span> <span class="pre">=</span> <span class="pre">self.larva.random</span></code>. Now you have to issue a command to the larva: morph to drone.</p>
-<p>You can issue commands using the function <code class="docutils literal notranslate"><span class="pre">self.do(action)</span></code>. You have to import ability ids before you can use them. <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">sc2.ids.ability_id</span> <span class="pre">import</span> <span class="pre">AbilityId</span></code>. Here, the action can be <code class="docutils literal notranslate"><span class="pre">my_action</span> <span class="pre">=</span> <span class="pre">my_larva(AbilityId.LARVATRAIN_DRONE)</span></code>. In total, this results in:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sc2.ids.ability_id</span> <span class="k">import</span> <span class="n">AbilityId</span>
+<p>You can issue commands using the __call__ function: <code class="docutils literal notranslate"><span class="pre">unit(ability)</span></code>. You have to import ability ids before you can use them. <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">sc2.ids.ability_id</span> <span class="pre">import</span> <span class="pre">AbilityId</span></code>. Here, the action can be <code class="docutils literal notranslate"><span class="pre">my_larva(AbilityId.LARVATRAIN_DRONE)</span></code>. In total, this results in:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sc2.ids.ability_id</span> <span class="kn">import</span> <span class="n">AbilityId</span>
 
 <span class="n">my_larva</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">larva</span><span class="o">.</span><span class="n">random</span>
-<span class="n">my_action</span> <span class="o">=</span> <span class="n">my_larva</span><span class="p">(</span><span class="n">AbilityId</span><span class="o">.</span><span class="n">LARVATRAIN_DRONE</span><span class="p">)</span>
-<span class="bp">self</span><span class="o">.</span><span class="n">do</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
-<span class="c1"># Or the old way to do this was</span>
-<span class="c1"># self.action.append(my_action)</span>
+<span class="n">my_larva</span><span class="p">(</span><span class="n">AbilityId</span><span class="o">.</span><span class="n">LARVATRAIN_DRONE</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Important: The action will be issued after the <code class="docutils literal notranslate"><span class="pre">on_step</span></code> function is completed and the bot communicated with the SC2 Client over the API. This can result in unexpected behavior. Your larva count is still at three (<code class="docutils literal notranslate"><span class="pre">self.larva.amount</span> <span class="pre">==</span> <span class="pre">3</span></code>), your minerals are still at 50 (<code class="docutils literal notranslate"><span class="pre">self.minerals</span> <span class="pre">==</span> <span class="pre">50</span></code>) and your supply did not go up (<code class="docutils literal notranslate"><span class="pre">self.supply_used</span> <span class="pre">==</span> <span class="pre">12</span></code>), but expected behavior might be that the larva amount drops to 2, self.minerals should be 0 and self.supply_used should be 13 since the pending drone uses up supply.</p>
-<p>The last two issues can be fixed by calling the <code class="docutils literal notranslate"><span class="pre">self.do</span></code> function differently, specifically:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">do</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">larva</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">AbilityId</span><span class="o">.</span><span class="n">LARVATRAIN_DRONE</span><span class="p">),</span> <span class="n">subtract_cost</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">subtract_supply</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<p>The last two issues can be fixed by calling it differently, specifically:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">larva</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">AbilityId</span><span class="o">.</span><span class="n">LARVATRAIN_DRONE</span><span class="p">,</span> <span class="n">subtract_cost</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">subtract_supply</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The keyword arguments are optional because many actions are move or attack commands, instead of train or build commands, thus making the bot slightly faster if only specific actions are checked if they have a cost associated.</p>
 <p>There are two more ways to do the same:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sc2.ids.unit_typeid</span> <span class="k">import</span> <span class="n">UnitTypeId</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sc2.ids.unit_typeid</span> <span class="kn">import</span> <span class="n">UnitTypeId</span>
 
-<span class="bp">self</span><span class="o">.</span><span class="n">do</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">larva</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">UnitTypeId</span><span class="o">.</span><span class="n">DRONE</span><span class="p">),</span> <span class="n">subtract_cost</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">subtract_supply</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">larva</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">UnitTypeId</span><span class="o">.</span><span class="n">DRONE</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>This converts the UnitTypeId to the AbilityId that is required to train the unit.</p>
@@ -188,7 +246,7 @@
 <p>So a more performant way to train as many drones as possible is:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">loop_larva</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">larva</span><span class="p">:</span>
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_afford</span><span class="p">(</span><span class="n">UnitTypeId</span><span class="o">.</span><span class="n">DRONE</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">do</span><span class="p">(</span><span class="n">loop_larva</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">UnitTypeId</span><span class="o">.</span><span class="n">DRONE</span><span class="p">),</span> <span class="n">subtract_cost</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">subtract_supply</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">loop_larva</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">UnitTypeId</span><span class="o">.</span><span class="n">DRONE</span><span class="p">)</span>
         <span class="c1"># Add break statement here if you only want to train one</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># Can&#39;t afford drones anymore</span>
@@ -201,16 +259,16 @@
     <span class="k">if</span> <span class="n">loop_larva</span><span class="o">.</span><span class="n">tag</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit_tags_received_action</span><span class="p">:</span>
         <span class="k">continue</span>
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_afford</span><span class="p">(</span><span class="n">UnitTypeId</span><span class="o">.</span><span class="n">DRONE</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">do</span><span class="p">(</span><span class="n">loop_larva</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">UnitTypeId</span><span class="o">.</span><span class="n">DRONE</span><span class="p">),</span> <span class="n">subtract_cost</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">subtract_supply</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">loop_larva</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">UnitTypeId</span><span class="o">.</span><span class="n">DRONE</span><span class="p">)</span>
         <span class="c1"># Add break statement here if you only want to train one</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># Can&#39;t afford drones anymore</span>
         <span class="k">break</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="building-a-structure">
-<h3>Building a structure<a class="headerlink" href="#building-a-structure" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="building-a-structure">
+<h3>Building a structure<a class="headerlink" href="#building-a-structure" title="Link to this heading"></a></h3>
 <p>Nearly the same procedure is when you want to build a structure. All that is needed is</p>
 <ul class="simple">
 <li><p>Which building type should be built</p></li>
@@ -235,12 +293,12 @@
 </pre></div>
 </div>
 <p>One thing that was not mentioned yet is that you don’t want to build more than 1 spawning pool. To prevent this, you can check that the number of pending and completed structures is zero:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">already_pending</span><span class="p">(</span><span class="n">UnitTypeId</span><span class="o">.</span><span class="n">SPAWNINGPOOL</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">structure</span><span class="p">:</span> <span class="n">structure</span><span class="o">.</span><span class="n">type_id</span> <span class="o">==</span> <span class="n">UnitTypeId</span><span class="o">.</span><span class="n">SPAWNINGPOOL</span> <span class="ow">and</span> <span class="n">structure</span><span class="o">.</span><span class="n">is_ready</span><span class="p">)</span><span class="o">.</span><span class="n">amount</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">already_pending</span><span class="p">(</span><span class="n">UnitTypeId</span><span class="o">.</span><span class="n">SPAWNINGPOOL</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">structures</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">structure</span><span class="p">:</span> <span class="n">structure</span><span class="o">.</span><span class="n">type_id</span> <span class="o">==</span> <span class="n">UnitTypeId</span><span class="o">.</span><span class="n">SPAWNINGPOOL</span> <span class="ow">and</span> <span class="n">structure</span><span class="o">.</span><span class="n">is_ready</span><span class="p">)</span><span class="o">.</span><span class="n">amount</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
     <span class="c1"># Build spawning pool</span>
 </pre></div>
 </div>
 <p>So in total: To build a spawning pool in direction of the map center, it is recommended to use:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_afford</span><span class="p">(</span><span class="n">UnitTypeId</span><span class="o">.</span><span class="n">SPAWNINGPOOL</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">already_pending</span><span class="p">(</span><span class="n">UnitTypeId</span><span class="o">.</span><span class="n">SPAWNINGPOOL</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">structure</span><span class="p">:</span> <span class="n">structure</span><span class="o">.</span><span class="n">type_id</span> <span class="o">==</span> <span class="n">UnitTypeId</span><span class="o">.</span><span class="n">SPAWNINGPOOL</span> <span class="ow">and</span> <span class="n">structure</span><span class="o">.</span><span class="n">is_ready</span><span class="p">)</span><span class="o">.</span><span class="n">amount</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_afford</span><span class="p">(</span><span class="n">UnitTypeId</span><span class="o">.</span><span class="n">SPAWNINGPOOL</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">already_pending</span><span class="p">(</span><span class="n">UnitTypeId</span><span class="o">.</span><span class="n">SPAWNINGPOOL</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">structures</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">structure</span><span class="p">:</span> <span class="n">structure</span><span class="o">.</span><span class="n">type_id</span> <span class="o">==</span> <span class="n">UnitTypeId</span><span class="o">.</span><span class="n">SPAWNINGPOOL</span> <span class="ow">and</span> <span class="n">structure</span><span class="o">.</span><span class="n">is_ready</span><span class="p">)</span><span class="o">.</span><span class="n">amount</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
     <span class="n">worker_candidates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">workers</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">worker</span><span class="p">:</span> <span class="p">(</span><span class="n">worker</span><span class="o">.</span><span class="n">is_collecting</span> <span class="ow">or</span> <span class="n">worker</span><span class="o">.</span><span class="n">is_idle</span><span class="p">)</span> <span class="ow">and</span> <span class="n">worker</span><span class="o">.</span><span class="n">tag</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit_tags_received_action</span><span class="p">)</span>
     <span class="c1"># Worker_candidates can be empty</span>
     <span class="k">if</span> <span class="n">worker_candidates</span><span class="p">:</span>
@@ -250,87 +308,49 @@
         <span class="c1"># Placement_position can be None</span>
         <span class="k">if</span> <span class="n">placement_position</span><span class="p">:</span>
             <span class="n">build_worker</span> <span class="o">=</span> <span class="n">worker_candidates</span><span class="o">.</span><span class="n">closest_to</span><span class="p">(</span><span class="n">placement_position</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">do</span><span class="p">(</span><span class="n">build_worker</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">UnitTypeId</span><span class="o">.</span><span class="n">SPAWNINGPOOL</span><span class="p">,</span> <span class="n">placement_position</span><span class="p">,</span> <span class="n">subtract_cost</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">build_worker</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">UnitTypeId</span><span class="o">.</span><span class="n">SPAWNINGPOOL</span><span class="p">,</span> <span class="n">placement_position</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The same can be achieved with the convenience function <code class="docutils literal notranslate"><span class="pre">self.build</span></code> which automatically picks a worker and internally uses <code class="docutils literal notranslate"><span class="pre">self.find_placement</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_afford</span><span class="p">(</span><span class="n">UnitTypeId</span><span class="o">.</span><span class="n">SPAWNINGPOOL</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">already_pending</span><span class="p">(</span><span class="n">UnitTypeId</span><span class="o">.</span><span class="n">SPAWNINGPOOL</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">structure</span><span class="p">:</span> <span class="n">structure</span><span class="o">.</span><span class="n">type_id</span> <span class="o">==</span> <span class="n">UnitTypeId</span><span class="o">.</span><span class="n">SPAWNINGPOOL</span> <span class="ow">and</span> <span class="n">structure</span><span class="o">.</span><span class="n">is_ready</span><span class="p">)</span><span class="o">.</span><span class="n">amount</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_afford</span><span class="p">(</span><span class="n">UnitTypeId</span><span class="o">.</span><span class="n">SPAWNINGPOOL</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">already_pending</span><span class="p">(</span><span class="n">UnitTypeId</span><span class="o">.</span><span class="n">SPAWNINGPOOL</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">structures</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">structure</span><span class="p">:</span> <span class="n">structure</span><span class="o">.</span><span class="n">type_id</span> <span class="o">==</span> <span class="n">UnitTypeId</span><span class="o">.</span><span class="n">SPAWNINGPOOL</span> <span class="ow">and</span> <span class="n">structure</span><span class="o">.</span><span class="n">is_ready</span><span class="p">)</span><span class="o">.</span><span class="n">amount</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
     <span class="n">map_center</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">game_info</span><span class="o">.</span><span class="n">map_center</span>
     <span class="n">position_towards_map_center</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_location</span><span class="o">.</span><span class="n">towards</span><span class="p">(</span><span class="n">map_center</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
     <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">UnitTypeId</span><span class="o">.</span><span class="n">SPAWNINGPOOL</span><span class="p">,</span> <span class="n">near</span><span class="o">=</span><span class="n">position_towards_map_center</span><span class="p">,</span> <span class="n">placement_step</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
 
 
+           </div>
           </div>
-        </div>
-      </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-  <h3><a href="../index.html">Table of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">Introduction</a><ul>
-<li><a class="reference internal" href="#requirements">Requirements</a></li>
-<li><a class="reference internal" href="#installation">Installation</a></li>
-<li><a class="reference internal" href="#creating-a-bot">Creating a bot</a></li>
-<li><a class="reference internal" href="#available-information-in-the-game">Available information in the game</a></li>
-<li><a class="reference internal" href="#possible-bot-actions">Possible bot actions</a><ul>
-<li><a class="reference internal" href="#training-a-unit">Training a unit</a></li>
-<li><a class="reference internal" href="#building-a-structure">Building a structure</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../index.html" class="btn btn-neutral float-left" title="Welcome to python-sc2’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="docker.html" class="btn btn-neutral float-right" title="Using docker to run SC2 bots" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="../index.html"
-                        title="previous chapter">Welcome to python-sc2’s documentation!</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="../bot_ai/index.html"
-                        title="next chapter">bot_ai.py</a></p>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="../_sources/text_files/introduction.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, tweakimp BurnySc2.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
         </div>
       </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="../bot_ai/index.html" title="bot_ai.py"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="../index.html" title="Welcome to python-sc2’s documentation!"
-             >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">python-sc2  documentation</a> &#187;</li> 
-      </ul>
-    </div>
-    <div class="footer" role="contentinfo">
-        &#169; Copyright 2019, tweakimp BurnySc2.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
-    </div>
-  </body>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
 </html>
