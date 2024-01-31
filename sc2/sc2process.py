@@ -101,7 +101,9 @@ class SC2Process:
             # callback handlers to accept two positional arguments
             kill_switch.kill_all()
 
-        signal.signal(signal.SIGINT, signal_handler)
+        # HACK: Commenting this out enables SC2Process to be used in a child thread
+        # TODO: Is there a way to make this work?
+        # signal.signal(signal.SIGINT, signal_handler)
 
         try:
             self._process = self._launch()
@@ -116,7 +118,9 @@ class SC2Process:
     async def __aexit__(self, *args):
         await self._close_connection()
         kill_switch.kill_all()
-        signal.signal(signal.SIGINT, signal.SIG_DFL)
+        # HACK: Commenting this out enables SC2Process to be used in a child thread
+        # TODO: Is there a way to make this work?
+        # signal.signal(signal.SIGINT, signal.SIG_DFL)
 
     @property
     def ws_url(self):
